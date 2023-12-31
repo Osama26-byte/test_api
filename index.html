@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask API Form</title>
+    <script>
+        function submitData(event) {
+            event.preventDefault();
+
+            var passage = document.getElementById('passage').value;
+            var question = document.getElementById('question').value;
+            var answer = document.getElementById('answer').value;
+
+            fetch('http://127.0.0.1:5000/get_txt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ passage: passage, question: question, answer: answer })
+        })
+            .then(response => {
+                // Log the response here
+                console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Error:', error));
+
+        }
+    </script>
+</head>
+<body>
+    <h1>Test MOOCHI</h1>
+    <form id="dataForm" onsubmit="submitData(event)">
+        <div>
+            <label for="passage">Passage:</label><br>
+            <textarea id="passage" name="passage" rows="4" cols="50"></textarea>
+        </div>
+        <div>
+            <label for="question">Question:</label><br>
+            <input type="text" id="question" name="question" placeholder="Enter question">
+        </div>
+        <div>
+            <label for="answer">Answer:</label><br>
+            <input type="text" id="answer" name="answer" placeholder="Enter answer">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>Response:</h2>
+    <pre id="response"></pre>
+</body>
+</html>
