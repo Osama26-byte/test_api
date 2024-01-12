@@ -1,3 +1,5 @@
 openai
 flask
+flask-cors
 requests
+waitress

@@ -28,40 +28,41 @@ Rubric Criteria:
                 Level 4: (0 Marks) Flawed attempt.
  """
 
-@app.route('/get_txt', methods=['GET', 'POST'])
+ 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({'message': 'Service Up and Running'})
+
+@app.route('/get_txt', methods=['POST'])
 def get_txt():
-    if request.method == 'POST':
-        try:
-            # Expecting 'question' and 'answer' in the JSON data
-            passage = request.json['passage']
-            question = request.json['question']
-            answer = request.json['answer']
+    try:
+        # Expecting 'question' and 'answer' in the JSON data
+        passage = request.json['passage']
+        question = request.json['question']
+        answer = request.json['answer']
 
-            model_response = gpt_api(question, answer, passage)
-            splitted = model_response.split('\n\n')
-            res = {}
-            tot_m = []
-            try :
-                for i in range(0, len(splitted)):
-                    txt = splitted[i].split('\n')
-                    res[txt[0].split(':')[0]] = {}
-                    res[txt[0].split(':')[0]]['Level'] = txt[1].split(':')[1].strip()
-                    res[txt[0].split(':')[0]]['Marks'] = txt[2].split(':')[1].strip()
-                    res[txt[0].split(':')[0]]['Feedback'] = txt[3].split(':')[1].strip()
+        model_response = gpt_api(question, answer, passage)
+        splitted = model_response.split('\n\n')
+        res = {}
+        tot_m = []
+        try :
+            for i in range(0, len(splitted)):
+                txt = splitted[i].split('\n')
+                res[txt[0].split(':')[0]] = {}
+                res[txt[0].split(':')[0]]['Level'] = txt[1].split(':')[1].strip()
+                res[txt[0].split(':')[0]]['Marks'] = txt[2].split(':')[1].strip()
+                res[txt[0].split(':')[0]]['Feedback'] = txt[3].split(':')[1].strip()
 
-            except IndexError:
-                pass
-            tot_m = float(res['Criteria 1']['Marks']) + float(res['Criteria 2']['Marks']) + float(res['Criteria 3']['Marks'])
-            response = {'message': 'Evaluating Your answer based on the provided question and answer', 
-                        'question': question, 'answer': answer, 'model_response': res, 'total_marks': tot_m}
+        except IndexError:
+            pass
+        tot_m = float(res['Criteria 1']['Marks']) + float(res['Criteria 2']['Marks']) + float(res['Criteria 3']['Marks'])
+        response = {'message': 'Evaluating Your answer based on the provided question and answer', 
+                    'question': question, 'answer': answer, 'model_response': res, 'total_marks': tot_m}
 
-            return jsonify(response), 200
-        except KeyError:
-            error_response = {'error': 'Please provide both "question" and "answer" parameters in the JSON data'}
-            return jsonify(error_response), 400
-    else:
-        error_response = {'error': 'Invalid request method. Use POST.'}
-        return jsonify(error_response), 405
+        return jsonify(response), 200
+    except KeyError:
+        error_response = {'error': 'Please provide both "question" and "answer" parameters in the JSON data'}
+        return jsonify(error_response), 400
 
 def gpt_api(question, answer, passage):
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -85,11 +86,10 @@ def gpt_api(question, answer, passage):
     model_response = chat_completion.choices[0].message.content
     return model_response
 
-
-os.environ['OPENAI_API_KEY'] = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+def start_server():
+    return app
 
 if __name__ == '__main__':
-
-    app.run(debug=True)/get_txt()
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
