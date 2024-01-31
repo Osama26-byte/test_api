@@ -36,22 +36,22 @@
     <div class="container">
 
     <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="moochi.png" alt="" width="250">
+        <img class="d-block mx-auto mb-4" src="moochi.png" alt="" width="200">
         <h2>MOOCHI (Test)</h2>
         <p class="lead">An advanced AI-driven educational tool revolutionizing the exam evaluation experience.</p>
-      </div>
+    </div>
     
     <form id="dataForm" onsubmit="submitData(event)">
 
         <select id="passageSelect" name="passagee" class="form-control">
             <option value="default">Select a passage</option>
-            <option value="media">Media</option>
+            <option value="media">Media SSC-1 2022</option>
             <option value="test">Test</option>
         </select>
           
         <div>
             <label for="passage">Passage</label><br>
-            <textarea id="passage" name="passage" class="form-control" rows="4" cols="150"></textarea>
+            <textarea id="passage" name="passage" class="form-control" rows="4" cols="150" required></textarea>
         </div>
         <div>
             <label for="question">Question</label><br>
@@ -63,14 +63,47 @@
             </select>
             <!-- <input type="text" id="question" name="question" placeholder="Enter question" size="150" value="How has media attracted the attention of a large number of audience?"> -->
             <br>
-            <textarea id="question" type="hidden"name="question" class="form-control" rows="1" cols="150">How has media attracted the attention of a large number of audience?</textarea>
+            <textarea id="question" style="display:none;" name="question" class="form-control" rows="1" cols="150"></textarea>
         </div>
         <div>
             <label for="answer">Answer</label><br>
             <textarea type="text" id="answer" name="answer" class="form-control" rows="3" cols="150">Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world.</textarea>
             <!-- <input type="text" id="answer" name="answer" placeholder="Enter answer" size="150" value="Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world."> -->
         </div>
+        <br>
         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+
+
+
+
+        <!-- Trigger the modal with a button -->
+  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">test popup</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Score</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+</div>
+
+
+
+
+
+
     </form>
     <h2>Response</h2>
     <pre id="response"></pre>
@@ -119,6 +152,9 @@
         // Call fillTextarea function initially to set the initial state of textarea
         fillquestionTextarea();
         fillpassageTextarea();
+
+
+
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
