@@ -5,29 +5,12 @@ from openai import OpenAI
 import requests
 from collections import OrderedDict
 from flask_cors import CORS
+import criteria
 
 app = Flask(__name__)
 CORS(app)
 
-
-rubric_criteria = """
-Rubric Criteria:
-    Criteria 1: Title of the given passage.
-                Level 1: (1 Marks) Correct Title i.e., Relevant to the gist of the given passage with correct structure/mechanics. (Capitalization, Punctuation, Spelling, Grammar, etc.)
-                Level 2: (0.5 Marks) Relevent but incompllete /incorrect structure.
-                Level 3: (0 Marks) Wrong title i.e., Not relevent to the given passage.
-    Criteria 2: Summary of the given passage. (Content and its organization)
-                Level 1: (3 Marks) An excellent attempt with the most relevant content and organization, exhibiting logical transition across the body of the summary reflecting thorough grasp of the given text.
-                Level 2: (2 Marks) Sustainable/sufficient attempt i.e. covering most of the parameters.
-                Level 3: (1 Marks) Limited/mediocre attempt i.e. covering some of the parameters.
-                Level 4: (0 Marks) Wrong answer.
-    Criteria 3: Summary of the given passage. (use of language, expression, and length of the summary)
-                Level 1: (2 Marks) An attempt which is grammatically and lexically correct to the maximum extent with the parameter of length preferably not exceeding half of the given passage.
-                Level 2: (1 Marks) An attempt which covers the given parameters of content/expression to a sufficient extent
-                Level 3: (0.5 Marks) An attempt with some aspects of the given parameters being met. 
-                Level 4: (0 Marks) Flawed attempt.
- """
-
+rubric_criteria = criteria.rubric_criteria_2iii
  
 @app.route('/', methods=['GET'])
 def index():
@@ -55,9 +38,11 @@ def get_txt():
 
         except IndexError:
             pass
-        tot_m = float(res['Criteria 1']['Marks']) + float(res['Criteria 2']['Marks']) + float(res['Criteria 3']['Marks'])
-        response = {'message': 'Evaluating Your answer based on the provided question and answer', 
-                    'question': question, 'answer': answer, 'model_response': res, 'total_marks': tot_m}
+        # tot_m = float(res['Criteria 1']['Marks']) + float(res['Criteria 2']['Marks']) + float(res['Criteria 3']['Marks'])
+        tot_m = float(res['Criteria 1']['Marks'])
+        # response = {'message': 'Evaluating Your answer based on the provided question and answer', 
+                    # 'question': question, 'answer': answer, 'model_response': res, 'total_marks': tot_m}
+        response = {'question': question, 'answer': answer, 'model_response': res, 'total_marks': tot_m}
 
         return jsonify(response), 200
     except KeyError:
@@ -65,7 +50,8 @@ def get_txt():
         return jsonify(error_response), 400
 
 def gpt_api(question, answer, passage):
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    # client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    client = OpenAI(api_key="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")
 
     # Use the user's text as input to the GPT-3.5-turbo model
     chat_completion = client.chat.completions.create(
@@ -79,8 +65,6 @@ def gpt_api(question, answer, passage):
             {"role": "user", "content": "Rubric Criteria: " + rubric_criteria}
         ]
     )
-
-    # Analyse the answer to the question based on the provided rubric: '{question}'\n\nRubric: {rubric}. Assign a level\n\nAnswer: {answer}
 
     # Extract the model's response
     model_response = chat_completion.choices[0].message.content
