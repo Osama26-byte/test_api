@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
     <title>Flask API Form</title>
     <script>
         function submitData(event) {
@@ -30,26 +32,98 @@
         }
     </script>
 </head>
-<body>
-    <h1>Test MOOCHI</h1>
+<body class="bg-light">
+    <div class="container">
+
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="moochi.png" alt="" width="250">
+        <h2>MOOCHI (Test)</h2>
+        <p class="lead">An advanced AI-driven educational tool revolutionizing the exam evaluation experience.</p>
+      </div>
+    
     <form id="dataForm" onsubmit="submitData(event)">
+
+        <select id="passageSelect" name="passagee" class="form-control">
+            <option value="default">Select a passage</option>
+            <option value="media">Media</option>
+            <option value="test">Test</option>
+        </select>
+          
         <div>
-            <label for="passage">Passage:</label><br>
-            <textarea id="passage" name="passage" rows="4" cols="150">Media helps people to share knowledge of the world, their feelings and opinions are expressed through it. Media attracts the attention of a very large audience. It is through media that the world has become a global village. Media plays a very constructive role for the society. It raises awareness about many social issues like corruption, terrorism, drug addiction and violation of human rights. Media has become a mouthpiece of the downtrodden. It would not be wrong to say that media is the most vigilant institution that keeps an eye on every segment of the society. Through debates, reports and talk shows it makes everyone accountable and answerable. This is why media has become an integral part of our lives. Media can play a positive role and has a corrective impact if it works honestly.</textarea>
+            <label for="passage">Passage</label><br>
+            <textarea id="passage" name="passage" class="form-control" rows="4" cols="150"></textarea>
         </div>
         <div>
-            <label for="question">Question:</label><br>
+            <label for="question">Question</label><br>
+            <select id="questionSelect" class="form-control">
+                <option value="default">Select question</option>
+                <option value="i">Write down the summary of the passage. Also suggest a suitable title.</option>
+                <option value="ii">How has media attracted the attention of a large number of audience?</option>
+                <option value="iii">Do you agree that media has become part of our life? Explain your answer.</option>
+            </select>
             <!-- <input type="text" id="question" name="question" placeholder="Enter question" size="150" value="How has media attracted the attention of a large number of audience?"> -->
-            <textarea id="question" name="question" rows="1" cols="150">How has media attracted the attention of a large number of audience?</textarea>
+            <br>
+            <textarea id="question" type="hidden"name="question" class="form-control" rows="1" cols="150">How has media attracted the attention of a large number of audience?</textarea>
         </div>
         <div>
-            <label for="answer">Answer:</label><br>
-            <textarea type="text" id="answer" name="answer" rows="3" cols="150">Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world.</textarea>
+            <label for="answer">Answer</label><br>
+            <textarea type="text" id="answer" name="answer" class="form-control" rows="3" cols="150">Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world.</textarea>
             <!-- <input type="text" id="answer" name="answer" placeholder="Enter answer" size="150" value="Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world."> -->
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
     </form>
-    <h2>Response:</h2>
+    <h2>Response</h2>
     <pre id="response"></pre>
+<!-- </div> -->
+</div>
+
+
+    <script>
+        function fillpassageTextarea() {
+        var select = document.getElementById("passageSelect");
+        var textarea = document.getElementById("passage");
+
+        var selectedPassage = select.value;
+
+        if (selectedPassage === "media") {
+            textarea.value = "Media helps people to share knowledge of the world, their feelings and opinions are expressed through it. Media attracts the attention of a very large audience. It is through media that the world has become a global village. Media plays a very constructive role for the society. It raises awareness about many social issues like corruption, terrorism, drug addiction and violation of human rights. Media has become a mouthpiece of the downtrodden. It would not be wrong to say that media is the most vigilant institution that keeps an eye on every segment of the society. Through debates, reports and talk shows it makes everyone accountable and answerable. This is why media has become an integral part of our lives. Media can play a positive role and has a corrective impact if it works honestly.";
+        } else if (selectedPassage === "test") {
+            textarea.value = "This is the test text for passage 2.";
+        } else {
+            textarea.value = ""; // Reset textarea if default option is selected
+        }
+        }
+
+        function fillquestionTextarea() {
+        var select = document.getElementById("questionSelect");
+        var textarea = document.getElementById("question");
+
+        var selectedPassage = select.value;
+
+        if (selectedPassage === "i") {
+            textarea.value = "Write down the summary of the passage. Also suggest a suitable title.";
+        } else if (selectedPassage === "ii") {
+            textarea.value = "How has media attracted the attention of a large number of audience?";
+        } else if (selectedPassage === "iii") {
+            textarea.value = "Do you agree that media has become part of our life? Explain your answer.";
+        } else {
+            textarea.value = ""; // Reset textarea if default option is selected
+        }
+        }
+
+        // Add event listener to the passage dropdown menu
+        document.getElementById("passageSelect").addEventListener("change", fillpassageTextarea);
+        document.getElementById("questionSelect").addEventListener("change", fillquestionTextarea);
+
+
+        // Call fillTextarea function initially to set the initial state of textarea
+        fillquestionTextarea();
+        fillpassageTextarea();
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
 </body>
 </html>
