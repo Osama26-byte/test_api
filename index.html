@@ -13,11 +13,12 @@
             var passage = document.getElementById('passage').value;
             var question = document.getElementById('question').value;
             var answer = document.getElementById('answer').value;
+            var questionid = document.getElementById("questionSelect").value;
 
             fetch('http://127.0.0.1:5000/get_txt', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ passage: passage, question: question, answer: answer })
+            body: JSON.stringify({ passage: passage, question: question, answer: answer, questionid: questionid })
         })
             .then(response => {
                 // Log the response here
@@ -26,6 +27,8 @@
             })
             .then(data => {
                 document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+                // jd = JSON.stringify(data, null, 2);
+                jsonData = JSON.parse(JSON.stringify(data, null, 2));
             })
             .catch(error => console.error('Error:', error));
 
@@ -45,7 +48,7 @@
 
         <select id="passageSelect" name="passagee" class="form-control">
             <option value="default">Select a passage</option>
-            <option value="media">Media SSC-1 2022</option>
+            <option value="media">English SSC-1 2022 Q2</option>
             <option value="test">Test</option>
         </select>
           
@@ -67,29 +70,31 @@
         </div>
         <div>
             <label for="answer">Answer</label><br>
-            <textarea type="text" id="answer" name="answer" class="form-control" rows="3" cols="150">Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world.</textarea>
+            <textarea type="text" id="answer" name="answer" class="form-control" rows="3" cols="150"></textarea>
             <!-- <input type="text" id="answer" name="answer" placeholder="Enter answer" size="150" value="Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world."> -->
         </div>
         <br>
         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 
-
-
-
+        
         <!-- Trigger the modal with a button -->
-  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">test popup</button>
+  <button type="button" onclick="openModal()" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">test popup</button>
 
-  <!-- Modal -->
+
+  <!-- <button onclick="openModal()">Open Modal</button> -->
+
+
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
     
-      <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Score</h4>
         </div>
         <div class="modal-body">
-          <p>Some text in the modal.</p>
+            <h2>Total Marks: <span id="totalMarks"></span></h2>
+            <h3>Feedback</h3>
+            <p id="feedback">feedback here</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -102,14 +107,11 @@
 
 
 
-
-
     </form>
     <h2>Response</h2>
     <pre id="response"></pre>
 <!-- </div> -->
 </div>
-
 
     <script>
         function fillpassageTextarea() {
@@ -129,33 +131,50 @@
 
         function fillquestionTextarea() {
         var select = document.getElementById("questionSelect");
-        var textarea = document.getElementById("question");
+        var qtextarea = document.getElementById("question");
+        var atextarea = document.getElementById("answer");
 
         var selectedPassage = select.value;
 
         if (selectedPassage === "i") {
-            textarea.value = "Write down the summary of the passage. Also suggest a suitable title.";
+            qtextarea.value = "Write down the summary of the passage. Also suggest a suitable title.";
+            atextarea.value = "Title: The Constructive Role of Media in Society. Summary: The media serves as a means for people to share their knowledge, feelings, and opinions with a large audience. It has helped the world become a global village and plays a crucial role in raising awareness about social issues such as corruption, terrorism, drug addiction, and human rights violations. The media also serves as a voice for the disadvantaged and keeps a watchful eye on all aspects of society, making everyone accountable through debates, reports, and talk shows. Thus, media has become an essential part of our lives and has the potential to make a positive impact if it functions honestly"
         } else if (selectedPassage === "ii") {
-            textarea.value = "How has media attracted the attention of a large number of audience?";
+            qtextarea.value = "How has media attracted the attention of a large number of audience?";
+            atextarea.value = "Media attracts a large audience by sharing knowledge, expressing feelings and opinions, and raising awareness about social issues. It has become an integral part of people's lives, keeping them informed and connected through various channels such as television, radio, print, and digital platforms. Media makes it possible for people to access news and entertainment from anywhere in the world."
         } else if (selectedPassage === "iii") {
-            textarea.value = "Do you agree that media has become part of our life? Explain your answer.";
+            qtextarea.value = "Do you agree that media has become part of our life? Explain your answer.";
+            atextarea.value = "It is evident that media has become an integral part of our lives. Media has the ability to connect people across the world, provide access to information, and create a platform for expression of opinions and ideas. In today's digital age, people rely heavily on various forms of media to stay informed, entertained, and connected with the world. From social media platforms to traditional news outlets, media has become a constant presence in our daily lives, shaping our perspectives and influencing our actions."
         } else {
-            textarea.value = ""; // Reset textarea if default option is selected
+            qtextarea.value = ""; // Reset textarea if default option is selected
         }
         }
+
 
         // Add event listener to the passage dropdown menu
         document.getElementById("passageSelect").addEventListener("change", fillpassageTextarea);
         document.getElementById("questionSelect").addEventListener("change", fillquestionTextarea);
-
-
+        
         // Call fillTextarea function initially to set the initial state of textarea
         fillquestionTextarea();
         fillpassageTextarea();
 
-
-
+       
+        // Function to open the modal and populate its content
+        function openModal() {
+        //   var modal = document.getElementById("myModal");
+          var totalMarksSpan = document.getElementById("totalMarks");
+          var feedbackParagraph = document.getElementById("feedback");
+        
+          // Populate modal content with data from JSON
+          totalMarksSpan.textContent = jsonData["total_marks"]
+          feedbackParagraph.textContent = jsonData.model_response["Criteria 1"].Feedback;
+                
+        }
+    
     </script>
+
+    
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

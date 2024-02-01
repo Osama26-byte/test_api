@@ -10,7 +10,7 @@ import criteria
 app = Flask(__name__)
 CORS(app)
 
-rubric_criteria = criteria.rubric_criteria_2iii
+# rubric_criteria = None
  
 @app.route('/', methods=['GET'])
 def index():
@@ -20,11 +20,23 @@ def index():
 def get_txt():
     try:
         # Expecting 'question' and 'answer' in the JSON data
+        rubric_criteria = None
         passage = request.json['passage']
         question = request.json['question']
         answer = request.json['answer']
+        questionid = request.json['questionid']
 
-        model_response = gpt_api(question, answer, passage)
+        if questionid == "i":
+            rubric_criteria = criteria.rubric_criteria_2i
+        elif questionid == "ii":
+            rubric_criteria = criteria.rubric_criteria_2ii
+        elif questionid == "iii":
+            rubric_criteria = criteria.rubric_criteria_2iii
+        else:
+            print("no option")
+        
+
+        model_response = gpt_api(question, answer, passage,rubric_criteria)
         splitted = model_response.split('\n\n')
         res = {}
         tot_m = []
@@ -38,10 +50,13 @@ def get_txt():
 
         except IndexError:
             pass
-        # tot_m = float(res['Criteria 1']['Marks']) + float(res['Criteria 2']['Marks']) + float(res['Criteria 3']['Marks'])
-        tot_m = float(res['Criteria 1']['Marks'])
-        # response = {'message': 'Evaluating Your answer based on the provided question and answer', 
-                    # 'question': question, 'answer': answer, 'model_response': res, 'total_marks': tot_m}
+        
+        response_len = len(res)
+        if response_len == 1:
+            tot_m = float(res['Criteria 1']['Marks'])
+        elif response_len == 3:
+            tot_m = float(res['Criteria 1']['Marks']) + float(res['Criteria 2']['Marks']) + float(res['Criteria 3']['Marks'])
+
         response = {'question': question, 'answer': answer, 'model_response': res, 'total_marks': tot_m}
 
         return jsonify(response), 200
@@ -49,7 +64,7 @@ def get_txt():
         error_response = {'error': 'Please provide both "question" and "answer" parameters in the JSON data'}
         return jsonify(error_response), 400
 
-def gpt_api(question, answer, passage):
+def gpt_api(question, answer, passage, rubric_criteria):
     # client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
     client = OpenAI(api_key="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")
 
@@ -57,7 +72,7 @@ def gpt_api(question, answer, passage):
     chat_completion = client.chat.completions.create(
          model="gpt-3.5-turbo",
         messages=[
-            {"role": "user", "content": "Analyse the answer to the question based on the provided rubric, and assign a level from each criteria. Output should contain just the levels and their feedback for each criteria for example Criteria 1: , level: ,marks: , feedback: , Criteria 2: ,level: ,marks: , feedback: , Criteria 3: , level: ,marks: , feedback: "},
+            {"role": "user", "content": "Analyse the answer to the question based on the provided rubric, and assign a level from each criteria. Output should contain just the levels and their feedback for each criteria for example Criteria 1: , level: ,marks: , feedback: "},
             {"role": "user", "content": "Passage: " + passage},
             {"role": "user", "content": "Question: " + question},
             {"role": "user", "content": "Answer: " + answer},
