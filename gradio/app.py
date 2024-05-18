@@ -11,8 +11,6 @@ def gpt_api(passage, question, answer):
     print(question)
     print(answer)
 
-    
-
     return answer
     
 interface = gr.Interface(

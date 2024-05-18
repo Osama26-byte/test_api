@@ -26,12 +26,22 @@ def get_txt():
         answer = request.json['answer']
         questionid = request.json['questionid']
 
-        if questionid == "i":
+        if questionid == "2i":
             rubric_criteria = criteria.rubric_criteria_2i
-        elif questionid == "ii":
+        elif questionid == "2ii":
             rubric_criteria = criteria.rubric_criteria_2ii
-        elif questionid == "iii":
+        elif questionid == "2iii":
             rubric_criteria = criteria.rubric_criteria_2iii
+        elif questionid == "iii":
+            rubric_criteria = criteria.rubric_criteria_3
+        elif questionid == "iv":
+            rubric_criteria = criteria.rubric_criteria_4
+        elif questionid == "v":
+            rubric_criteria = criteria.rubric_criteria_5
+        elif questionid == "vi":
+            rubric_criteria = criteria.rubric_criteria_6
+        elif questionid == "vii":
+            rubric_criteria = criteria.rubric_criteria_7
         else:
             print("no option")
         
