@@ -37,7 +37,7 @@ def gpt_api(user_text):
     model_response = chat_completion.choices[0].message.content
     return model_response
 
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = ''
 
 if __name__ == '__main__':
 
